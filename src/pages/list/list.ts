@@ -39,6 +39,7 @@ export class ListPage {
   // private opacityTable: number[];
   private ratings: any[];
   //private dimensionRatings: number[];
+  collosionCount : number;
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     this.slider1 = 0.2;
@@ -50,13 +51,13 @@ export class ListPage {
     this.DEG_RAD = Math.PI / 180;
     this.ratings = [];
     //this.dimensionRatings = [];
+    this.collosionCount = 0;
   }
 
   ngOnInit(){
     this.setRatings();
     this.canvas.nativeElement.width = window.innerWidth;
     this.canvas.nativeElement.height = window.innerWidth;
-    //this.canvas.nativeElement.height = document.getElementsByTagName("canvas")[0].getBoundingClientRect().width;
     this.calcConstant();
     this.createPolygon();
   }
@@ -93,9 +94,8 @@ export class ListPage {
     this.Y3CONST = polygonRadius * Math.sin(-162 * this.DEG_RAD);
     this.Y4CONST = polygonRadius * Math.sin(-234 * this.DEG_RAD);
     this.Y5CONST = polygonRadius * Math.sin(-306 * this.DEG_RAD);
-
   };
-
+  
   createPolygon = () => {
     let context = this.canvas.nativeElement.getContext('2d');
     context.globalCompositeOperation = 'multiply';
@@ -139,7 +139,7 @@ export class ListPage {
       context.lineTo(this.xPos5, this.yPos5);
       context.lineTo(this.xPos1, this.yPos1);
       context.fill();
-      context.closePath();  
+      context.closePath();
   }
 
   calcCoordinates = () => {
@@ -167,6 +167,7 @@ export class ListPage {
 
   changeCanvasRating = (event) => {
     let rect = this.canvas.nativeElement.getBoundingClientRect();
+    let newRating = 0;
     
     // Canvas element and bitmap are of different size hence getting the scale ratio
     let scaleX = this.canvas.nativeElement.width / rect.width;
@@ -174,18 +175,57 @@ export class ListPage {
     let x0 = ((event.center.x - rect.left) * scaleX) - this.x;
     let y0 = ((event.center.y - rect.top) * scaleY) - this.y;
 
-    let angle = Math.atan2(-y0, x0)*180 / Math.PI;
+    let x2 = 0;
+    let y2 = 0;
+    this.collosionCount = 0;
 
+    if(x0 >= 0){
+      x2 = this.canvas.nativeElement.width;
+      y2 = y0 + this.y;
+
+      this.lineIntersects((1 * this.X1CONST + this.x).toFixed(2), (1 * this.Y1CONST + this.y).toFixed(2), (1 * this.X2CONST + this.x).toFixed(2), (1 * this.Y2CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((2 * this.X1CONST + this.x).toFixed(2), (2 * this.Y1CONST + this.y).toFixed(2), (2 * this.X2CONST + this.x).toFixed(2), (2 * this.Y2CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((3 * this.X1CONST + this.x).toFixed(2), (3 * this.Y1CONST + this.y).toFixed(2), (3 * this.X2CONST + this.x).toFixed(2), (3 * this.Y2CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((4 * this.X1CONST + this.x).toFixed(2), (4 * this.Y1CONST + this.y).toFixed(2), (4 * this.X2CONST + this.x).toFixed(2), (4 * this.Y2CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((5 * this.X1CONST + this.x).toFixed(2), (5 * this.Y1CONST + this.y).toFixed(2), (5 * this.X2CONST + this.x).toFixed(2), (5 * this.Y2CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+  
+      this.lineIntersects((1 * this.X1CONST + this.x).toFixed(2), (1 * this.Y1CONST + this.y).toFixed(2), (1 * this.X5CONST + this.x).toFixed(2), (1 * this.Y5CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((2 * this.X1CONST + this.x).toFixed(2), (2 * this.Y1CONST + this.y).toFixed(2), (2 * this.X5CONST + this.x).toFixed(2), (2 * this.Y5CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((3 * this.X1CONST + this.x).toFixed(2), (3 * this.Y1CONST + this.y).toFixed(2), (3 * this.X5CONST + this.x).toFixed(2), (3 * this.Y5CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((4 * this.X1CONST + this.x).toFixed(2), (4 * this.Y1CONST + this.y).toFixed(2), (4 * this.X5CONST + this.x).toFixed(2), (4 * this.Y5CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((5 * this.X1CONST + this.x).toFixed(2), (5 * this.Y1CONST + this.y).toFixed(2), (5 * this.X5CONST + this.x).toFixed(2), (5 * this.Y5CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+    }
+    else{
+      x2 = 0;
+      y2 = y0 + this.y;
+
+      this.lineIntersects((1 * this.X2CONST + this.x).toFixed(2), (1 * this.Y2CONST + this.y).toFixed(2), (1 * this.X3CONST + this.x).toFixed(2), (1 * this.Y3CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((2 * this.X2CONST + this.x).toFixed(2), (2 * this.Y2CONST + this.y).toFixed(2), (2 * this.X3CONST + this.x).toFixed(2), (2 * this.Y3CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((3 * this.X2CONST + this.x).toFixed(2), (3 * this.Y2CONST + this.y).toFixed(2), (3 * this.X3CONST + this.x).toFixed(2), (3 * this.Y3CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((4 * this.X2CONST + this.x).toFixed(2), (4 * this.Y2CONST + this.y).toFixed(2), (4 * this.X3CONST + this.x).toFixed(2), (4 * this.Y3CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((5 * this.X2CONST + this.x).toFixed(2), (5 * this.Y2CONST + this.y).toFixed(2), (5 * this.X3CONST + this.x).toFixed(2), (5 * this.Y3CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+  
+      this.lineIntersects((1 * this.X3CONST + this.x).toFixed(2), (1 * this.Y3CONST + this.y).toFixed(2), (1 * this.X4CONST + this.x).toFixed(2), (1 * this.Y4CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((2 * this.X3CONST + this.x).toFixed(2), (2 * this.Y3CONST + this.y).toFixed(2), (2 * this.X4CONST + this.x).toFixed(2), (2 * this.Y4CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((3 * this.X3CONST + this.x).toFixed(2), (3 * this.Y3CONST + this.y).toFixed(2), (3 * this.X4CONST + this.x).toFixed(2), (3 * this.Y4CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((4 * this.X3CONST + this.x).toFixed(2), (4 * this.Y3CONST + this.y).toFixed(2), (4 * this.X4CONST + this.x).toFixed(2), (4 * this.Y4CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);
+      this.lineIntersects((5 * this.X3CONST + this.x).toFixed(2), (5 * this.Y3CONST + this.y).toFixed(2), (5 * this.X4CONST + this.x).toFixed(2), (5 * this.Y4CONST + this.y).toFixed(2), x0 + this.x, y0 + this.y, x2, y2);    
+    }
+
+    this.collosionCount == 0 ? newRating = 5 : newRating = 6 - this.collosionCount;   
+    let angle = Math.atan2(-y0, x0)*180 / Math.PI;
     angle < 0 ? angle+=360 : angle;
 
     if(angle < 54 || angle > 342){
       let i1 = x0 / this.X1CONST;
       if(i1 < 0.25){
         i1 = 0;
-      } else if(i1 > 5){
-        i1 = 5;
-      } else{
-        i1 = Math.ceil(i1);
+      }
+      // else if(i1 > 5){
+      //   i1 = 5;
+      // } 
+      else{
+        i1 = newRating;
       }
       this.ratings[0] != i1 ? this.ratings[0] = i1 : this.ratings[0];
 
@@ -193,10 +233,12 @@ export class ListPage {
       let i2 = y0 / this.Y2CONST;
       if(i2 < 0.25){
         i2 = 0;
-      } else if(i2 > 5){
-        i2 = 5;
-      } else{
-        i2 = Math.ceil(i2);
+      } 
+      // else if(i2 > 5){
+      //   i2 = 5;
+      // } 
+      else{
+        i2 = newRating;
       }
       this.ratings[1] != i2 ? this.ratings[1] = i2 : this.ratings[1];
 
@@ -204,10 +246,12 @@ export class ListPage {
       let i3 = x0 / this.X3CONST;
       if(i3 < 0.25){
         i3 = 0;
-      } else if(i3 > 5){
-        i3 = 5;
-      } else{
-        i3 = Math.ceil(i3);
+      } 
+      // else if(i3 > 5){
+      //   i3 = 5;
+      // } 
+      else{
+        i3 = newRating;
       }
       this.ratings[2] != i3 ? this.ratings[2] = i3 : this.ratings[2];
 
@@ -215,10 +259,12 @@ export class ListPage {
       let i4 = y0 / this.Y4CONST;
       if(i4 < 0.25){
         i4 = 0;
-      } else if(i4 > 5){
-        i4 = 5;
-      } else{
-        i4 = Math.ceil(i4);
+      } 
+      // else if(i4 > 5){
+      //   i4 = 5;
+      // } 
+      else{
+        i4 = newRating;
       }
       this.ratings[3] != i4 ? this.ratings[3] = i4 : this.ratings[3];
 
@@ -226,10 +272,12 @@ export class ListPage {
       let i5 = y0 / this.Y5CONST;
       if(i5 < 0.25){
         i5 = 0;
-      } else if(i5 > 5){
-        i5 = 5;
-      } else{
-        i5 = Math.ceil(i5);
+      } 
+      // else if(i5 > 5){
+      //   i5 = 5;
+      // } 
+      else{
+        i5 = newRating;
       }
       this.ratings[4] != i5 ? this.ratings[4] = i5 : this.ratings[4];
     }
@@ -245,5 +293,22 @@ export class ListPage {
   touchEv1 = (event) =>{
     //console.log(event);
   }
+
+  lineIntersects = (p0_x, p0_y, p1_x, p1_y, p2_x, p2_y, p3_x, p3_y) => {
+    
+        var s1_x, s1_y, s2_x, s2_y;
+        s1_x = p1_x - p0_x;
+        s1_y = p1_y - p0_y;
+        s2_x = p3_x - p2_x;
+        s2_y = p3_y - p2_y;
+    
+        var s, t;
+        s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
+        t = ( s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
+    
+        if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
+            this.collosionCount++;
+        }
+    }
 
 }
