@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Snapshot To Complete</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-range min="0" max="5" step="1" snaps="true" [(ngModel)] = "slider1"  color="mysolo" (ionChange)="OnChange($event)"></ion-range>
+    <ion-range min="0" max="5" step="1" snaps="true" [(ngModel)] = "slider2"  color="mysolo" (ionChange)="OnChange($event)"></ion-range>
+    <ion-range min="0" max="5" step="1" snaps="true" [(ngModel)] = "slider3"  color="mysolo" (ionChange)="OnChange($event)"></ion-range>
+    <ion-range min="0" max="5" step="1" snaps="true" [(ngModel)] = "slider4"  color="mysolo" (ionChange)="OnChange($event)"></ion-range>
+    <ion-range min="0" max="5" step="1" snaps="true" [(ngModel)] = "slider5"  color="mysolo" (ionChange)="OnChange($event)"></ion-range>
+  </ion-item>
+  <ion-item>
+      <canvas id="myCanvas" #myCanvas (tap)="changeCanvasRating($event)" (touchstart)="touchEv($event)" (touchend)="touchEv1($event)"></canvas>
+  </ion-item>
+ 
+</ion-content>
